@@ -17,6 +17,7 @@ import {
   sw2,
   sw20,
   sw240,
+  sw536,
   sw8,
 } from "../../styles";
 import { CustomSpacer } from "../Views/Spacer";
@@ -67,7 +68,7 @@ export const CustomButton: FunctionComponent<CustomButtonProps> = ({
     backgroundColor: secondary ? colorTransparent : color,
     height: sh48,
     opacity: disabled === true ? 0.5 : 1,
-    width: sw240,
+    width: sw536,
     ...buttonStyle,
   };
 

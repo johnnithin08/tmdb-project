@@ -1,12 +1,12 @@
 declare interface IAxisY {
-    y: number;
+  y: number;
 }
 
 declare interface IDimensions {
-    height: number;
-    width: number;
+  height: number;
+  width: number;
 }
 
 declare interface IBasicLayout extends IAxisY, IDimensions {
-    x: number;
+  x: number;
 }
