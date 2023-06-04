@@ -33,6 +33,10 @@ import {
   sw360,
   sw362,
   sw4,
+  sw500,
+  sw536,
+  sw56,
+  sw600,
   sw8,
 } from "../../styles";
 import { CustomSpacer } from "../Views/Spacer";
@@ -105,10 +109,10 @@ export const CustomTextInput: FunctionComponent<CustomTextInputProps> = ({
     ...border(isFocused ? colorBlue._1 : colorGray._3, isFocused ? sw2 : sw1, sw32),
     ...centerVertical,
     ...flexRow,
-    ...px(isFocused === false && error === undefined ? sw16 : sw15),
+    ...px(isFocused === false && error === undefined ? sw32 : sw32),
     backgroundColor: colorWhite._1,
     height: sh48,
-    width: sw360,
+    width: sw536,
     ...borderWidth,
     ...focusedShadow,
     ...errorStyle,
