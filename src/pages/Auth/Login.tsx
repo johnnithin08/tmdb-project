@@ -4,6 +4,7 @@ import { CustomButton, CustomSpacer, CustomTextInput, SafeAreaPage } from '../..
 import { colorGreen, colorTransparent, flexChild, flexColCC, px, sh100, sh200, sh24, sh300, sh32, sh48, sh56, sw100, sw12, sw16, sw200, sw24, sw248, sw400, sw500, sw56 } from '../../styles'
 import { LocalAssets } from '../../assets/images/LocalAssets'
 import { getSessionToken, login } from '../../network-actions'
+import Fontisto from 'react-native-vector-icons/Fontisto'
 
 declare interface ILoginProps {
   navigation: HomeScreenProps['navigation'];
@@ -33,8 +34,7 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation, route }: ILo
     setPassword(value)
   }
   const handleLogin = async () => {
-    const sessionToken: string = await getSessionToken();
-    const loginResponse = await login(userName, password, sessionToken)
+    const loginResponse: boolean = await login(userName, password);
     if (loginResponse === true) {
       navigation.navigate("Private")
     }

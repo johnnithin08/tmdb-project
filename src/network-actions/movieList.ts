@@ -23,3 +23,10 @@ export const getMovieList = async (movieListCategory: string): Promise<Movie[]> 
   return movieListResponse.data.results
 
 }
+
+export const searchMovies = async (searchString: string): Promise<Movie[]> => {
+  const searchUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchString}`
+  const movieListResponse = await axios.get(searchUrl)
+  return movieListResponse.data.results
+
+}

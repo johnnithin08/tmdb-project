@@ -5,15 +5,16 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { CustomSpacer, CustomTextInput, MovieCard, SafeAreaPage, SingleSelectPills } from '../../components'
 import { autoWidth, centerHV, colorBlack, colorGray, flexChild, flexColCC, flexGrow, flexRow, flexWrap, px, sh10, sh20, sh200, sh24, sh32, sh4, sw100, sw16, sw24, sw32, sw36, sw54, sw600, sw8 } from '../../styles'
-import { getMovieList, getTrending } from '../../network-actions'
+import { getMovieList, getTrendingMovies, searchMovies } from '../../network-actions'
 
-export const SLIDER_WIDTH = Dimensions.get('window').width;
-export const ITEM_WIDTH = Math.round(SLIDER_WIDTH) * 0.8;
+const SLIDER_WIDTH = Dimensions.get('window').width;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH) * 0.8;
 
-export const Home: FunctionComponent = () => {
+export const Movies: FunctionComponent = () => {
   const [movieListCategory, setMovieListCategory] = useState<string>("Now Playing");
   const [movieList, setMovieList] = useState<Movie[]>([]);
   const [trending, setTrending] = useState<ITrending[]>([]);
+  const [movieName, setMovieName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true)
   const scrollRef = useRef<ScrollView | undefined>()
   const carouselRef = useRef<Carousel | null>(null)
@@ -34,20 +35,45 @@ export const Home: FunctionComponent = () => {
 
   const handleFetchTrending = async () => {
     setLoading(true)
-    const trendingResponse: ITrending[] = await getTrending();
+    const trendingResponse: ITrending[] = await getTrendingMovies();
     setLoading(false)
     setTrending(trendingResponse.slice(0, 10))
   }
 
+  const handleSearchMovies = async () => {
+    setLoading(true)
+    const moviesResponse = await searchMovies(movieName);
+    setLoading(false)
+    setMovieList(moviesResponse)
+  }
+
+  const handleMovieName = (inputString: string) => {
+    setMovieName(inputString)
+  }
+
+  useEffect(() => {
+    if (movieName === "") {
+      handleFetchMovieListCategory();
+    }
+    else {
+      handleSearchMovies();
+    }
+  }, [movieName])
+
   useEffect(() => {
     handleFetchMovieListCategory();
-    handleFetchTrending()
     if (scrollRef !== null) {
       scrollRef.current?.scrollTo({ x: 0, y: 0 })
     }
   }, [movieListCategory])
 
-  console.log('movie', trending)
+  useEffect(() => {
+    console.log('enter')
+    handleFetchMovieListCategory();
+    handleFetchTrending()
+  }, [])
+
+  console.log('movie', loading)
 
   const renderCarouselItem = (item: ITrending) => {
     return (
@@ -85,7 +111,7 @@ export const Home: FunctionComponent = () => {
             </View>
           )}
           <View style={px(sw54)}>
-            <CustomTextInput placeholder='Search' containerStyle={{ ...autoWidth }} style={{ ...autoWidth }} viewStyle={{ ...autoWidth, borderRadius: 100 }} />
+            <CustomTextInput placeholder='Search' containerStyle={{ ...autoWidth }} onChangeText={handleMovieName} style={{ ...autoWidth }} viewStyle={{ ...autoWidth, borderRadius: 100 }} value={movieName} />
             <CustomSpacer space={sh10} />
             <ScrollView style={{ maxHeight: sh32 }} horizontal={true} showsHorizontalScrollIndicator={false}>
               <SingleSelectPills
