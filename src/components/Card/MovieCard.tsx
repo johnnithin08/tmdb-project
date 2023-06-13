@@ -6,15 +6,16 @@ import { sw4, sh8, colorBlack, sw8, sw32 } from "../../styles";
 
 interface IMovieCardProps {
   posterPath?: string | null;
-  style?: ViewStyle;
+  movieCardStyle?: ViewStyle;
 }
 
-export const MovieCard = ({ posterPath, style: inputStyle }: IMovieCardProps): JSX.Element => {
+export const MovieCard = ({ posterPath, movieCardStyle }: IMovieCardProps): JSX.Element => {
   const movieCard: ViewStyle = {
-    height: Dimensions.get("screen").height * .6,
-    width: Dimensions.get("screen").width * .49,
-    marginHorizontal: sw4,
+    height: Dimensions.get("screen").height * .25,
+    width: Dimensions.get("screen").width * .48,
+    marginHorizontal: sw8,
     marginBottom: sh8,
+    ...movieCardStyle
   };
 
   return (

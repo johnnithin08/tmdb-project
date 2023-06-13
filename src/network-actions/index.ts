@@ -1,3 +1,6 @@
 export * from "./login"
 export * from "./movieList"
+export * from "./profile"
 export * from "./trending"
+export * from "./tvList"
+export * from "./watchlist"
