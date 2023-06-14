@@ -28,11 +28,15 @@ export const App = (): JSX.Element => {
       />
       {Platform.select({
         android: (
+          <KeyboardAvoidingView behavior="height" style={flexChild}>
+            <RootNavigator />
+          </KeyboardAvoidingView>
+        ),
+        ios: (
           <KeyboardAvoidingView behavior="padding" style={flexChild}>
             <RootNavigator />
           </KeyboardAvoidingView>
         ),
-        ios: <RootNavigator />,
       })}
     </SafeAreaProvider>
   );

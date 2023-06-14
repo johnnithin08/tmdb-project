@@ -1,4 +1,4 @@
-import { API_KEY, BASE_URL, CREATE_SESSION_URL, LOGIN_URL, SESSION_TOKEN_URL } from "../constants";
+import { API_KEY, BASE_URL, CREATE_SESSION_URL, DELETE_SESSION, LOGIN_URL, SESSION_TOKEN_URL } from "../constants";
 import axios from "axios"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
@@ -10,6 +10,19 @@ export const getSessionToken = async (): Promise<string | boolean> => {
     return sessionTokenResponse.data.request_token;
   }
   catch (err) {
+    return false;
+  }
+}
+
+export const deleteSession = async (): Promise<string | boolean> => {
+  try {
+    const currentSession = await AsyncStorage.getItem('currentSession')
+    await AsyncStorage.clear();
+    const sessionTokenResponse = await axios.delete(`${BASE_URL}${DELETE_SESSION}?api_key=${API_KEY}&session_id=${currentSession}`)
+    return sessionTokenResponse.data.success;
+  }
+  catch (err) {
+    console.log("err", err)
     return false;
   }
 }
@@ -32,8 +45,8 @@ export const login = async (username: string, password: string): Promise<boolean
           request_token: generateRequestToken,
         },
       )
-      const accountId = await getAccountDetails(createSessionResponse.data.session_id);
-      await AsyncStorage.multiSet([['currentSession', createSessionResponse.data.session_id], ['accountId', accountId]])
+      const accountDetails = await getAccountDetails(createSessionResponse.data.session_id);
+      await AsyncStorage.multiSet([['currentSession', createSessionResponse.data.session_id], ['accountId', accountDetails.id.toString()]])
       return true;
     }
     return false;

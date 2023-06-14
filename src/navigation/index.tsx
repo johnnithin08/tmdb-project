@@ -10,19 +10,20 @@ const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>()
 
 export const RootNavigator: FunctionComponent = () => {
 
-  let isLoggedIn: boolean | null = false
+  let isLoggedIn: string | null = null
   const fetchLogin = async () => {
 
-    isLoggedIn = await AsyncStorage.getItem("currentSession") as unknown as boolean | null
+    isLoggedIn = await AsyncStorage.getItem("currentSession") as unknown as string | null
   }
 
   useEffect(() => {
     fetchLogin()
   }, [])
+  console.log("entered", isLoggedIn)
   return (
     <NavigationContainer>
       <Navigator screenOptions={{ headerShown: false }}>
-        {isLoggedIn === false ? (
+        {isLoggedIn === null ? (
           <Screen name="Login" component={Login} />
         ) : null}
         <Screen name="Private" component={Private} />

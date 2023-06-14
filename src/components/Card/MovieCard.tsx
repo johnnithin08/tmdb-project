@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Dimensions, GestureResponderEvent, Pressable, TouchableOpacity, View, ViewStyle } from "react-native";
 import FastImage from "react-native-fast-image";
 import { sw4, sh8, colorBlack, sw8, sw32 } from "../../styles";
+import { ORIGINAL_IMAGE_URL } from "../../constants";
 
 
 interface IMovieCardProps {
@@ -22,7 +23,7 @@ export const MovieCard = ({ posterPath, movieCardStyle }: IMovieCardProps): JSX.
     <View style={movieCard}>
       <Pressable >
         <FastImage
-          source={{ uri: `https://image.tmdb.org/t/p/original${posterPath}` }}
+          source={{ uri: `${ORIGINAL_IMAGE_URL}${posterPath}` }}
           style={{
             height: "100%",
             width: "100%",

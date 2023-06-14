@@ -1,18 +1,27 @@
-import React, { FunctionComponent, useState } from 'react'
-import { Image, ImageStyle, SafeAreaView, Text, View, ViewStyle } from 'react-native'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { Alert, Image, ImageStyle, ScrollView, Text, View, ViewStyle } from 'react-native'
+import TouchID from 'react-native-touch-id'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Keychain from 'react-native-keychain'
+
+
 import { CustomButton, CustomSpacer, CustomTextInput, SafeAreaPage } from '../../components'
-import { colorGreen, colorTransparent, flexChild, flexColCC, px, sh100, sh200, sh24, sh300, sh32, sh48, sh56, sw100, sw12, sw16, sw200, sw24, sw248, sw400, sw500, sw56 } from '../../styles'
+import { centerHorizontal, colorBlack, colorGreen, colorTransparent, colorWhite, flexChild, flexColCC, flexRowCC, fs12BoldBlack2, px, sh100, sh200, sh24, sh300, sh32, sh48, sh56, sw05, sw1, sw100, sw12, sw16, sw200, sw24, sw248, sw400, sw500, sw56, sw8 } from '../../styles'
 import { LocalAssets } from '../../assets/images/LocalAssets'
-import { getSessionToken, login } from '../../network-actions'
-import Fontisto from 'react-native-vector-icons/Fontisto'
+import { login } from '../../network-actions'
 
 declare interface ILoginProps {
   navigation: HomeScreenProps['navigation'];
   route: HomeScreenProps['route'];
 }
 
+interface ICredentials {
+  username: string;
+  password: string;
+}
+
 export const Login: FunctionComponent<ILoginProps> = ({ navigation, route }: ILoginProps) => {
-  const [userName, setUserName] = useState<string>("")
+  const [username, setUsername] = useState<string>("")
   const [password, setPassword] = useState<string>("")
 
   const logoStyle: ImageStyle = {
@@ -20,41 +29,96 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation, route }: ILo
     width: sw400,
     borderRadius: sw16
   }
-  const buttonStyle: ViewStyle = {
+  const loginButtonStyle: ViewStyle = {
     backgroundColor: colorGreen._1,
     borderRadius: sw24,
-    borderColor: colorTransparent
+    borderColor: colorTransparent,
+  }
+  const biometricsButtonStyle: ViewStyle = {
+    backgroundColor: colorWhite._1,
+    borderRadius: sw24,
+    borderColor: colorTransparent,
   }
 
-  const handleUserName = (value: string) => {
-    setUserName(value)
+  const handleUsername = (value: string) => {
+    setUsername(value)
   }
 
   const handlePassword = (value: string) => {
     setPassword(value)
   }
-  const handleLogin = async () => {
-    const loginResponse: boolean = await login(userName, password);
+  const handleLogin = async (credentials?: ICredentials) => {
+    const usernameRequest = credentials !== undefined ? credentials.username : username
+    const passwordRequest = credentials !== undefined ? credentials.password : password
+    const loginResponse: boolean = await login(usernameRequest, passwordRequest);
     if (loginResponse === true) {
+      if (credentials === undefined) {
+        await Keychain.setGenericPassword(username, password);
+      }
       navigation.navigate("Private")
     }
   }
+
+  const handleNavigation = async () => {
+    const credentials = await Keychain.getGenericPassword();
+    if (credentials) {
+      handleLogin(credentials);
+    } else {
+      console.log('No credentials stored');
+    }
+  }
+
+  const handleAuthentication = async () => {
+    // const currentSession = await AsyncStorage.getItem("currentSession")
+    // if (currentSession !== null) {
+    TouchID.isSupported()
+      .then(biometryType => {
+        console.log("type", biometryType)
+        TouchID.authenticate()
+          .then(success => {
+            handleNavigation()
+          })
+          .catch(error => {
+            console.log(error)
+            Alert.alert(error.message);
+          });
+      })
+      .catch(err => {
+        console.log("err", err)
+      })
+    // }
+  }
+
   return (
     <SafeAreaPage>
-      <View style={flexChild}>
-        <CustomSpacer space={sh100} />
-        <View style={flexColCC}>
-          <Image style={logoStyle} source={LocalAssets.tmdbLogo} />
-          <CustomSpacer space={sh48} />
+      <ScrollView>
+        <View style={flexChild}>
+          <CustomSpacer space={sh100} />
+          <View style={flexColCC}>
+            <Image style={logoStyle} source={LocalAssets.tmdbLogo} />
+            <CustomSpacer space={sh48} />
+          </View>
+          <View style={{ ...px(sw248), ...flexColCC }}>
+            <View style={centerHorizontal}>
+              <CustomTextInput label='Username' onChangeText={handleUsername} value={username} />
+              <CustomSpacer space={sh24} />
+              <CustomTextInput label='Password' onChangeText={handlePassword} value={password} secureTextEntry={true} />
+              <CustomSpacer space={sh24} />
+              <CustomButton buttonStyle={loginButtonStyle} onPress={handleLogin} text='Login' />
+              <CustomSpacer space={sh24} />
+              <View style={{ ...flexRowCC }}>
+                <View style={{ ...flexChild, borderWidth: 0.5, borderBottomColor: colorBlack._1 }} />
+                <CustomSpacer isHorizontal={true} space={sw8} />
+                <Text style={fs12BoldBlack2}>Or</Text>
+                <CustomSpacer isHorizontal={true} space={sw8} />
+                <View style={{ ...flexChild, borderWidth: 0.5, borderBottomColor: colorBlack._1 }} />
+              </View>
+              <CustomSpacer space={sh24} />
+              <CustomButton buttonStyle={biometricsButtonStyle} onPress={handleAuthentication} text='Use Biometrics' textStyle={{ color: colorBlack._1 }} />
+            </View>
+          </View>
         </View>
-        <View style={{ ...px(sw248) }}>
-          <CustomTextInput label='Username' onChangeText={handleUserName} value={userName} />
-          <CustomSpacer space={sh24} />
-          <CustomTextInput label='Password' onChangeText={handlePassword} value={password} secureTextEntry={true} />
-          <CustomSpacer space={sh24} />
-          <CustomButton buttonStyle={buttonStyle} onPress={handleLogin} text='Login' />
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaPage>
   )
 }
