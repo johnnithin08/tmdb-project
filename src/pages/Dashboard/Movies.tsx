@@ -6,49 +6,51 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { CustomSpacer, CustomTextInput, MovieCard, SafeAreaPage, SingleSelectPills } from '../../components'
 import { autoWidth, centerHV, colorBlack, colorGray, flexChild, flexColCC, flexGrow, flexRow, flexWrap, px, sh10, sh20, sh200, sh24, sh32, sh4, sw100, sw16, sw24, sw32, sw36, sw54, sw600, sw8 } from '../../styles'
 import { getMovieList, getTrendingMovies, searchMovies } from '../../network-actions'
+import { updateMovieCategory, updateMoviesList, updateSearchMovie, updateSeriesCategory, updateTrendingMovies, useAppDispatch, useAppSelector } from "../../store"
+import { ORIGINAL_IMAGE_URL } from '../../constants';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH) * 0.8;
 
 export const Movies: FunctionComponent = () => {
-  const [movieListCategory, setMovieListCategory] = useState<string>("Now Playing");
-  const [movieList, setMovieList] = useState<Movie[]>([]);
-  const [trending, setTrending] = useState<ITrending[]>([]);
-  const [movieName, setMovieName] = useState<string>("");
+  // const [trending, setTrending] = useState<ITrending[]>([]);
   const [loading, setLoading] = useState<boolean>(true)
   const scrollRef = useRef<ScrollView | undefined>()
   const carouselRef = useRef<Carousel | null>(null)
+  const dispatch = useAppDispatch();
+  const moviesState = useAppSelector((state) => state.moviesState)
+  const { movieList, searchTerm: movieName, movieCategory: movieListCategory, trending } = moviesState
 
   const movieListCategoryArray: IPillsWithSubLabel[] = [{ label: "Now Playing" }, { label: "Popular" }, { label: "Top Rating" }, { label: "Upcoming" }]
 
 
-  const handleMovieListCategory = (value: string) => {
-    setMovieListCategory(value)
+  const handleMovieListCategory = (value: TMovieCategory) => {
+    dispatch(updateMovieCategory(value))
   }
 
   const handleFetchMovieListCategory = async () => {
     setLoading(true)
     const movieListResponse = await getMovieList(movieListCategory);
     setLoading(false)
-    setMovieList(movieListResponse)
+    dispatch(updateMoviesList(movieListResponse))
   }
 
   const handleFetchTrending = async () => {
     setLoading(true)
     const trendingResponse: ITrending[] = await getTrendingMovies();
     setLoading(false)
-    setTrending(trendingResponse.slice(0, 10))
+    dispatch(updateTrendingMovies(trendingResponse.slice(0, 10)))
   }
 
   const handleSearchMovies = async () => {
     setLoading(true)
     const moviesResponse = await searchMovies(movieName);
     setLoading(false)
-    setMovieList(moviesResponse)
+    dispatch(updateMoviesList(moviesResponse))
   }
 
   const handleMovieName = (inputString: string) => {
-    setMovieName(inputString)
+    dispatch(updateSearchMovie(inputString))
   }
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export const Movies: FunctionComponent = () => {
   const renderCarouselItem = (item: ITrending) => {
     return (
       <FastImage
-        source={{ uri: `https://image.tmdb.org/t/p/original${item.item.poster_path}` }}
+        source={{ uri: `${ORIGINAL_IMAGE_URL}${item.item.poster_path}` }}
         style={{
           height: "100%",
           width: "100%",
@@ -128,12 +130,12 @@ export const Movies: FunctionComponent = () => {
           <CustomSpacer space={sh10} />
           <ScrollView bounces={true} contentContainerStyle={flexGrow} ref={scrollRef} scrollEnabled={true} showsVerticalScrollIndicator={false} style={flexChild}>
             {loading === true ? (
-              <View style={{ ...flexColCC, ...flexChild }}>
+              <View style={{ ...flexColCC, ...flexChild, height: Dimensions.get("screen").height * .4 }}>
                 <ActivityIndicator size={"large"} />
               </View>
             ) : (
               <View style={{ ...flexChild, ...flexRow, ...flexWrap }}>
-                {movieList.map((movie: Movie, index: number) => {
+                {movieList.map((movie: IMovie, index: number) => {
                   return (
                     <MovieCard key={index} posterPath={movie.poster_path} />
                   )
