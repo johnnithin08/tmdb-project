@@ -28,18 +28,12 @@ export const TvSeries: FunctionComponent = () => {
   }
 
   const handleFetchTvSeriesListCategory = async () => {
-    console.log("enter in cate")
-    if (loading === false) {
-
-      console.log("enter")
-      setLoading(true)
-      // loading.current = true
-      console.log("enter", loading)
-      const tvSeriesListResponse = await getTvSeriesList(tvSeriesListCategory);
-      setLoading(false)
-      // loading.current = false
-      setTvSeriesList(tvSeriesListResponse)
-    }
+    setLoading(true)
+    // loading.current = true
+    const tvSeriesListResponse = await getTvSeriesList(tvSeriesListCategory);
+    setLoading(false)
+    // loading.current = false
+    setTvSeriesList(tvSeriesListResponse)
   }
 
   const handleFetchTrending = async () => {
@@ -80,7 +74,7 @@ export const TvSeries: FunctionComponent = () => {
   }, [tvSeriesListCategory])
 
   useEffect(() => {
-    // console.log("enter in all")
+    console.log("enter in all")
     handleFetchTrending();
     handleFetchTvSeriesListCategory();
   }, [])
