@@ -3,6 +3,7 @@ import { Dimensions, GestureResponderEvent, Pressable, TouchableOpacity, View, V
 import FastImage from "react-native-fast-image";
 import { sw4, sh8, colorBlack, sw8, sw32 } from "../../styles";
 import { ORIGINAL_IMAGE_URL } from "../../constants";
+import { LocalAssets } from "../../assets/images/LocalAssets";
 
 
 interface IMovieCardProps {
@@ -23,12 +24,14 @@ export const MovieCard = ({ posterPath, movieCardStyle }: IMovieCardProps): JSX.
     <View style={movieCard}>
       <Pressable >
         <FastImage
+          defaultSource={LocalAssets.imageLoader}
           source={{ uri: `${ORIGINAL_IMAGE_URL}${posterPath}` }}
           style={{
             height: "100%",
             width: "100%",
             borderRadius: sw32,
           }}
+          // onl
           resizeMode="stretch"
         />
       </Pressable>

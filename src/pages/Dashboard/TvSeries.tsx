@@ -6,25 +6,26 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { CustomSpacer, CustomTextInput, MovieCard, SafeAreaPage, SingleSelectPills } from '../../components'
 import { autoWidth, centerHV, colorBlack, colorGray, flexChild, flexColCC, flexGrow, flexRow, flexWrap, px, sh10, sh20, sh200, sh24, sh32, sh4, sw100, sw16, sw24, sw32, sw36, sw54, sw600, sw8 } from '../../styles'
 import { getMovieList, getTrendingTvSeries, getTvSeriesList, searchTvSeries } from '../../network-actions'
+import { updateSearchTvSeries, updateSeriesCategory, updateTvSeriesList, useAppDispatch, useAppSelector } from '../../store';
+import { ORIGINAL_IMAGE_URL } from '../../constants';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH) * 0.8;
 
 export const TvSeries: FunctionComponent = () => {
-  const [tvSeriesListCategory, settvSeriesListCategory] = useState<string>("Airing Today");
-  const [seriesName, setSeriesName] = useState<string>("");
-  const [tvSeriesList, setTvSeriesList] = useState<Movie[]>([]);
   const [trending, setTrending] = useState<ITrending[]>([]);
   const [loading, setLoading] = useState<boolean>(true)
-  // const loading = useRef<boolean>(true)
   const scrollRef = useRef<ScrollView | undefined>()
   const carouselRef = useRef<Carousel | null>(null)
+  const dispatch = useAppDispatch()
+  const tvSeriesState = useAppSelector((state) => state.tvSeriesState)
+  const { tvSeriesList, searchTerm: seriesName, seriesCategory: tvSeriesListCategory } = tvSeriesState
 
   const tvSeriesListCategoryArray: IPillsWithSubLabel[] = [{ label: "Airing Today" }, { label: "On the Air" }, { label: "Popular" }, { label: "Top Rated" }]
 
 
-  const handletvSeriesListCategory = (value: string) => {
-    settvSeriesListCategory(value)
+  const handletvSeriesListCategory = (value: TTvSeriesCategory) => {
+    dispatch(updateSeriesCategory(value))
   }
 
   const handleFetchTvSeriesListCategory = async () => {
@@ -33,7 +34,7 @@ export const TvSeries: FunctionComponent = () => {
     const tvSeriesListResponse = await getTvSeriesList(tvSeriesListCategory);
     setLoading(false)
     // loading.current = false
-    setTvSeriesList(tvSeriesListResponse)
+    dispatch(updateTvSeriesList(tvSeriesListResponse))
   }
 
   const handleFetchTrending = async () => {
@@ -49,12 +50,12 @@ export const TvSeries: FunctionComponent = () => {
     setLoading(true)
     const moviesResponse = await searchTvSeries(seriesName);
     setLoading(false)
-    setTvSeriesList(moviesResponse)
+    dispatch(updateTvSeriesList(moviesResponse))
   }
 
 
   const handleSeriesName = (inputString: string) => {
-    setSeriesName(inputString)
+    dispatch(updateSearchTvSeries(inputString))
   }
 
   useEffect(() => {
@@ -74,7 +75,6 @@ export const TvSeries: FunctionComponent = () => {
   }, [tvSeriesListCategory])
 
   useEffect(() => {
-    console.log("enter in all")
     handleFetchTrending();
     handleFetchTvSeriesListCategory();
   }, [])
@@ -84,7 +84,7 @@ export const TvSeries: FunctionComponent = () => {
   const renderCarouselItem = (item: ITrending) => {
     return (
       <FastImage
-        source={{ uri: `https://image.tmdb.org/t/p/original${item.item.poster_path}` }}
+        source={{ uri: `${ORIGINAL_IMAGE_URL}${item.item.poster_path}` }}
         style={{
           height: "100%",
           width: "100%",
@@ -134,12 +134,12 @@ export const TvSeries: FunctionComponent = () => {
           <CustomSpacer space={sh10} />
           <ScrollView bounces={true} contentContainerStyle={flexGrow} ref={scrollRef} scrollEnabled={true} showsVerticalScrollIndicator={false} style={flexChild}>
             {loading === true ? (
-              <View style={{ ...flexColCC, ...flexChild }}>
+              <View style={{ ...flexColCC, ...flexChild, height: Dimensions.get("screen").height * .4 }}>
                 <ActivityIndicator size={"large"} />
               </View>
             ) : (
               <View style={{ ...flexChild, ...flexRow, ...flexWrap }}>
-                {tvSeriesList.map((movie: Movie, index: number) => {
+                {tvSeriesList.map((movie: IMovie, index: number) => {
                   return (
                     <MovieCard key={index} posterPath={movie.poster_path} />
                   )
