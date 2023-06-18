@@ -1,4 +1,5 @@
 export * from "./login"
+export * from "./movieDetails"
 export * from "./movieList"
 export * from "./profile"
 export * from "./trending"

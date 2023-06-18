@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { Alert, Image, ImageStyle, ScrollView, Text, View, ViewStyle } from 'react-native'
 import TouchID from 'react-native-touch-id'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -10,19 +10,17 @@ import { centerHorizontal, colorBlack, colorGreen, colorTransparent, colorWhite,
 import { LocalAssets } from '../../assets/images/LocalAssets'
 import { login } from '../../network-actions'
 
-declare interface ILoginProps {
-  navigation: HomeScreenProps['navigation'];
-  route: HomeScreenProps['route'];
-}
+declare type ILoginProps = LoginScreenProps
 
 interface ICredentials {
   username: string;
   password: string;
 }
 
-export const Login: FunctionComponent<ILoginProps> = ({ navigation, route }: ILoginProps) => {
+export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProps) => {
   const [username, setUsername] = useState<string>("")
   const [password, setPassword] = useState<string>("")
+  const [biometrics, setBiometrics] = useState<ICredentials | null>(null)
 
   const logoStyle: ImageStyle = {
     height: sh200,
@@ -60,9 +58,9 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation, route }: ILo
   }
 
   const handleNavigation = async () => {
-    const credentials = await Keychain.getGenericPassword();
-    if (credentials) {
-      handleLogin(credentials);
+
+    if (biometrics) {
+      handleLogin(biometrics);
     } else {
       console.log('No credentials stored');
     }
@@ -89,6 +87,15 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation, route }: ILo
     // }
   }
 
+  const handleCheckBiometrics = async () => {
+    const credentials = await Keychain.getGenericPassword();
+    setBiometrics(credentials as ICredentials | null)
+  }
+
+  useEffect(() => {
+    handleCheckBiometrics()
+  }, [])
+
   return (
     <SafeAreaPage>
       <ScrollView>
@@ -106,15 +113,19 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation, route }: ILo
               <CustomSpacer space={sh24} />
               <CustomButton buttonStyle={loginButtonStyle} onPress={handleLogin} text='Login' />
               <CustomSpacer space={sh24} />
-              <View style={{ ...flexRowCC }}>
-                <View style={{ ...flexChild, borderWidth: 0.5, borderBottomColor: colorBlack._1 }} />
-                <CustomSpacer isHorizontal={true} space={sw8} />
-                <Text style={fs12BoldBlack2}>Or</Text>
-                <CustomSpacer isHorizontal={true} space={sw8} />
-                <View style={{ ...flexChild, borderWidth: 0.5, borderBottomColor: colorBlack._1 }} />
-              </View>
-              <CustomSpacer space={sh24} />
-              <CustomButton buttonStyle={biometricsButtonStyle} onPress={handleAuthentication} text='Use Biometrics' textStyle={{ color: colorBlack._1 }} />
+              {biometrics !== null ? (
+                <Fragment>
+                  <View style={{ ...flexRowCC }}>
+                    <View style={{ ...flexChild, borderWidth: 0.5, borderBottomColor: colorBlack._1 }} />
+                    <CustomSpacer isHorizontal={true} space={sw8} />
+                    <Text style={fs12BoldBlack2}>Or</Text>
+                    <CustomSpacer isHorizontal={true} space={sw8} />
+                    <View style={{ ...flexChild, borderWidth: 0.5, borderBottomColor: colorBlack._1 }} />
+                  </View>
+                  <CustomSpacer space={sh24} />
+                  <CustomButton buttonStyle={biometricsButtonStyle} onPress={handleAuthentication} text='Use Biometrics' textStyle={{ color: colorBlack._1 }} />
+                </Fragment>
+              ) : null}
             </View>
           </View>
         </View>

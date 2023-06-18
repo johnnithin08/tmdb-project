@@ -1,18 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { Alert, Pressable, Text, View, ViewStyle } from 'react-native'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { ActivityIndicator, Alert, Dimensions, Pressable, ScrollView, Text, View, ViewStyle } from 'react-native'
 import { useIsFocused } from '@react-navigation/native';
 
 
-import { CustomSpacer, SafeAreaPage } from "../../components"
-import { colorBlack, colorGray, colorGreen, colorWhite, flexChild, flexRow, flexRowCC, fs12BoldBlack2, fs16BoldBlack2, px, py, sh24, sh32, sh4, sh48, sw16, sw32, sw4, sw54 } from "../../styles"
+import { CustomSpacer, MovieCard, SafeAreaPage } from "../../components"
+import { colorBlack, colorGray, colorGreen, colorWhite, flexChild, flexColCC, flexGrow, flexRow, flexRowCC, flexWrap, fs12BoldBlack2, fs16BoldBlack2, px, py, sh16, sh24, sh32, sh4, sh48, sw16, sw32, sw4, sw54 } from "../../styles"
 import { getWatchlistMovies, getWatchlistTvSeries } from "../../network-actions";
+import { updateCurrentItem, useAppDispatch } from '../../store';
 
-declare type TCategory = "Movies" | "TV Series"
+declare type TCategory = "Movies" | "TV Series";
+type IWatchlistProps = WatchlistScreenProps;
 
-export const Watchlist = () => {
+export const Watchlist: FunctionComponent<IWatchlistProps> = ({ navigation }: IWatchlistProps) => {
   const isFocused = useIsFocused()
   const [category, setCategory] = useState<TCategory>("Movies")
   const [watchlist, setWatchlist] = useState<IWatchlist[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
+
+  const dispatch = useAppDispatch();
 
 
 
@@ -25,19 +31,27 @@ export const Watchlist = () => {
   }
 
   const fetchWatchlist = async () => {
+    setLoading(true)
     try {
       const watchlistResponse = category === "Movies" ? await getWatchlistMovies() : await getWatchlistTvSeries();
+      console.log("resp", watchlistResponse)
       setWatchlist(watchlistResponse)
+      setLoading(false)
     }
     catch (err) {
       Alert.alert("Something went wrong")
     }
   }
-  console.log("watch", watchlist)
 
   useEffect(() => {
     fetchWatchlist()
   }, [category])
+
+  useEffect(() => {
+    if (isFocused === true) {
+      fetchWatchlist()
+    }
+  }, [isFocused])
 
 
   return (
@@ -47,7 +61,6 @@ export const Watchlist = () => {
         <View style={px(sw54)}>
           <View style={tabsContainer}>
             {tabsArray.map((eachTab: string, tabIndex: number) => {
-
               const handleCategory = () => {
                 setCategory(tabsArray[tabIndex])
               }
@@ -63,9 +76,29 @@ export const Watchlist = () => {
               )
             })}
           </View>
-
+          <CustomSpacer space={sh16} />
         </View>
-
+        <ScrollView bounces={true} scrollEnabled={true} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={true}>
+          {loading === true ? (
+            <View style={{ ...flexColCC, ...flexChild, height: Dimensions.get("screen").height * .4 }}>
+              <ActivityIndicator size={"large"} />
+            </View>
+          ) : (
+            <View style={{ ...flexChild, ...flexRow, ...flexWrap }}>
+              {watchlist.map((watchItem: IWatchlist, index: number) => {
+                const handleSelectMovie = () => {
+                  console.log("watch", watchItem)
+                  const checkCategory = category === "Movies" ? "movies" : "tv";
+                  dispatch(updateCurrentItem({ category: checkCategory, data: watchItem as IMovie }))
+                  navigation.navigate("Details");
+                }
+                return (
+                  <MovieCard key={index} handlePress={handleSelectMovie} posterPath={watchItem.poster_path} />
+                )
+              })}
+            </View>
+          )}
+        </ScrollView>
       </View>
     </SafeAreaPage>
   )

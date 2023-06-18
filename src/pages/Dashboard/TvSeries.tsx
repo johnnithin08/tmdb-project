@@ -1,18 +1,20 @@
 import React, { Fragment, FunctionComponent, useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Dimensions, ScrollView, Text, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Pressable, ScrollView, Text, View } from 'react-native'
 import FastImage from "react-native-fast-image";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { CustomSpacer, CustomTextInput, MovieCard, SafeAreaPage, SingleSelectPills } from '../../components'
 import { autoWidth, centerHV, colorBlack, colorGray, flexChild, flexColCC, flexGrow, flexRow, flexWrap, px, sh10, sh20, sh200, sh24, sh32, sh4, sw100, sw16, sw24, sw32, sw36, sw54, sw600, sw8 } from '../../styles'
 import { getMovieList, getTrendingTvSeries, getTvSeriesList, searchTvSeries } from '../../network-actions'
-import { updateSearchTvSeries, updateSeriesCategory, updateTvSeriesList, useAppDispatch, useAppSelector } from '../../store';
-import { ORIGINAL_IMAGE_URL } from '../../constants';
+import { updateCurrentItem, updateSearchTvSeries, updateSeriesCategory, updateTvSeriesList, useAppDispatch, useAppSelector } from '../../store';
+import { IMAGE_URL_CAROUSEL } from '../../constants';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH) * 0.8;
 
-export const TvSeries: FunctionComponent = () => {
+type ITvSeriesProps = TVScreenProps
+
+export const TvSeries: FunctionComponent<ITvSeriesProps> = ({ navigation }: ITvSeriesProps) => {
   const [trending, setTrending] = useState<ITrending[]>([]);
   const [loading, setLoading] = useState<boolean>(true)
   const scrollRef = useRef<ScrollView | undefined>()
@@ -30,19 +32,16 @@ export const TvSeries: FunctionComponent = () => {
 
   const handleFetchTvSeriesListCategory = async () => {
     setLoading(true)
-    // loading.current = true
     const tvSeriesListResponse = await getTvSeriesList(tvSeriesListCategory);
+    console.log("resp", tvSeriesListResponse)
     setLoading(false)
-    // loading.current = false
     dispatch(updateTvSeriesList(tvSeriesListResponse))
   }
 
   const handleFetchTrending = async () => {
     setLoading(true)
-    // loading.current = true
     const trendingTvSeriesResponse: ITrending[] = await getTrendingTvSeries();
     setLoading(false)
-    // loading.current = false
     setTrending(trendingTvSeriesResponse.slice(0, 10))
   }
 
@@ -81,17 +80,23 @@ export const TvSeries: FunctionComponent = () => {
 
   // console.log('movie', loading)
 
-  const renderCarouselItem = (item: ITrending) => {
+  const renderCarouselItem = (item: any) => {
+    const handlePress = () => {
+      dispatch(updateCurrentItem({ category: "tv", data: item.item }))
+      navigation.navigate("Details");
+    }
     return (
-      <FastImage
-        source={{ uri: `${ORIGINAL_IMAGE_URL}${item.item.poster_path}` }}
-        style={{
-          height: "100%",
-          width: "100%",
-          borderRadius: sw32,
-        }}
-        resizeMode="stretch"
-      />
+      <Pressable onPress={handlePress}>
+        <FastImage
+          source={{ uri: `${IMAGE_URL_CAROUSEL}${item.item.poster_path}` }}
+          style={{
+            height: "100%",
+            width: "100%",
+            borderRadius: sw32,
+          }}
+          resizeMode="stretch"
+        />
+      </Pressable>
     )
   }
 
@@ -139,9 +144,14 @@ export const TvSeries: FunctionComponent = () => {
               </View>
             ) : (
               <View style={{ ...flexChild, ...flexRow, ...flexWrap }}>
-                {tvSeriesList.map((movie: IMovie, index: number) => {
+                {tvSeriesList.map((series: IMovie, index: number) => {
+
+                  const handleSelectSeries = () => {
+                    dispatch(updateCurrentItem({ category: "tv", data: series as IMovie }))
+                    navigation.navigate("Details");
+                  }
                   return (
-                    <MovieCard key={index} posterPath={movie.poster_path} />
+                    <MovieCard key={index} handlePress={handleSelectSeries} posterPath={series.poster_path} />
                   )
                 })}
               </View>

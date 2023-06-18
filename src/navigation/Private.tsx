@@ -5,6 +5,9 @@ import { Icon, Icons } from '../components'
 import { absolutePosition, colorBlack, colorGreen, colorWhite, flexChild, flexColCC } from '../styles'
 import { Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+import { WatchlistStackNavigator } from './WatchlistStackNavigator'
+import { SeriesStackNavigator } from './SeriesStackNavigator'
+import { MoviesStackNavigator } from './MoviesStackNavigator'
 
 const { Navigator, Screen } = createBottomTabNavigator<DashboardTabParamList>()
 
@@ -14,19 +17,19 @@ export const Private = () => {
   const tabsArray = [
     {
       name: "Movies",
-      component: Movies,
+      component: MoviesStackNavigator,
       type: Icons.Fontisto,
       iconName: "film",
     },
     {
       name: "TV",
-      component: TvSeries,
+      component: SeriesStackNavigator,
       type: Icons.Feather,
       iconName: "tv",
     },
     {
-      name: "Wishlist",
-      component: Watchlist,
+      name: "Watchlist",
+      component: WatchlistStackNavigator,
       type: Icons.MaterialCommunityIcons,
       iconName: "heart-plus",
     },
@@ -38,7 +41,7 @@ export const Private = () => {
     },
   ]
 
-  const TabBarButton = (props) => {
+  const TabBarButton = (props: BottomTabBarButtonProps) => {
     const { item, onPress, accessibilityState } = props;
     const focused = accessibilityState.selected;
     const viewRef = useRef(null)
@@ -78,7 +81,6 @@ export const Private = () => {
     left: 15,
     right: 15,
     borderRadius: 16,
-    // height: 60
   }
   return (
     <Navigator screenOptions={{ headerShown: false, tabBarStyle: barStyle }}>
