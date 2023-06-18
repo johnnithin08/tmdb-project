@@ -1,7 +1,7 @@
 import { API_KEY, BASE_URL } from "../constants";
 import axios from "axios"
 
-export const getMovieList = async (movieListCategory: string): Promise<Movie[]> => {
+export const getMovieList = async (movieListCategory: string): Promise<IMovie[]> => {
   let dynamicUrl = ""
   switch (movieListCategory) {
     case "Now Playing":
@@ -24,7 +24,7 @@ export const getMovieList = async (movieListCategory: string): Promise<Movie[]> 
 
 }
 
-export const searchMovies = async (searchString: string): Promise<Movie[]> => {
+export const searchMovies = async (searchString: string): Promise<IMovieData[]> => {
   const searchUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchString}`
   const movieListResponse = await axios.get(searchUrl)
   return movieListResponse.data.results

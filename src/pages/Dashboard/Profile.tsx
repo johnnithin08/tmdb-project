@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Image, Text, View, ViewStyle } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { CommonActions } from '@react-navigation/native'
 
 import { CustomButton, CustomSpacer, RoundedButton, SafeAreaPage } from '../../components'
 import { centerHorizontal, centerVertical, colorGray, colorGreen, colorTransparent, colorWhite, flexChild, flexRow, flexRowCC, fs12RegWhite1, fs16RegWhite1, fs18BoldBlack2, fs24BoldWhite1, px, sh24, sh48, sw12, sw24, sw56 } from '../../styles'
 import { deleteSession, getAccountDetails } from '../../network-actions'
-import { CommonActions } from '@react-navigation/native'
-import { GRAVATAR_IMAGE_URL, ORIGINAL_IMAGE_URL } from '../../constants'
+import { GRAVATAR_IMAGE_URL } from '../../constants'
 
-export const Profile = ({ navigation }) => {
+type IProfileProps = ProfileScreenProps
+
+export const Profile = ({ navigation }: IProfileProps) => {
 
   const [userData, setUserData] = useState<IUser>()
 
@@ -31,7 +33,6 @@ export const Profile = ({ navigation }) => {
   const fetchUserDetails = async () => {
     const currentSession: string = await AsyncStorage.getItem("currentSession") as unknown as string
     const userDataResponse: IUser | undefined = await getAccountDetails(currentSession)
-    console.log("user", userDataResponse)
     if (userDataResponse !== undefined) {
       setUserData(userDataResponse)
     }

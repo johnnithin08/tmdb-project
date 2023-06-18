@@ -4,6 +4,7 @@ import { ColorValue, Pressable, ViewStyle } from "react-native";
 
 // import { IcoMoon } from "../../icons";
 import { centerHV, colorTransparent, colorWhite, disabledOpacity5, sh20 } from "../../styles";
+import { Icon } from "./Icon";
 
 export interface IconButtonProps {
     color?: string;
@@ -12,6 +13,7 @@ export interface IconButtonProps {
     onPress?: () => void;
     size?: number;
     style?: ViewStyle;
+    type: unknown;
     withDebounce?: boolean;
     withHover?: { color: ColorValue };
 }
@@ -23,6 +25,7 @@ export const IconButton: FunctionComponent<IconButtonProps> = ({
     onPress,
     size,
     style,
+    type,
     withDebounce,
     withHover,
 }: IconButtonProps) => {
@@ -60,7 +63,7 @@ export const IconButton: FunctionComponent<IconButtonProps> = ({
             onPressIn={() => setHover(true)}
             onPressOut={() => setHover(false)}
             style={{ ...centerHV, ...style, backgroundColor: bgColor, ...disabledOpacity }}>
-            {/* <IcoMoon color={defaultColor} name={name} size={defaultSize} /> */}
+            <Icon color={defaultColor} name={name} size={defaultSize} type={type} />
         </Pressable>
     );
 };

@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Home, Login } from "../pages"
+import { Login } from "../pages"
 import { Private } from './Private'
 
 const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>()
@@ -19,7 +19,6 @@ export const RootNavigator: FunctionComponent = () => {
   useEffect(() => {
     fetchLogin()
   }, [])
-  console.log("entered", isLoggedIn)
   return (
     <NavigationContainer>
       <Navigator screenOptions={{ headerShown: false }}>
