@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { CommonActions } from '@react-navigation/native'
 
 import { CustomButton, CustomSpacer, RoundedButton, SafeAreaPage } from '../../components'
-import { centerHorizontal, centerVertical, colorGray, colorGreen, colorTransparent, colorWhite, flexChild, flexRow, flexRowCC, fs12RegWhite1, fs16RegWhite1, fs18BoldBlack2, fs24BoldWhite1, px, sh24, sh48, sw12, sw24, sw56 } from '../../styles'
+import { centerHorizontal, centerVertical, colorGray, colorGreen, colorTransparent, colorWhite, flexChild, flexColCC, flexRow, flexRowCC, fs12RegWhite1, fs16RegWhite1, fs18BoldBlack2, fs24BoldWhite1, px, sh24, sh48, sw12, sw24, sw56 } from '../../styles'
 import { deleteSession, getAccountDetails } from '../../network-actions'
 import { GRAVATAR_IMAGE_URL } from '../../constants'
 
@@ -47,9 +47,8 @@ export const Profile = ({ navigation }: IProfileProps) => {
     <SafeAreaPage>
       <View style={{ ...flexChild, backgroundColor: colorGray._5 }}>
         <View style={{ ...px(sw56), ...flexChild }}>
-          <Image source={{ uri: `${GRAVATAR_IMAGE_URL}${userData?.avatar.gravatar.hash}` }} style={{ height: 200, width: 200 }} />
           <CustomSpacer space={sh24} />
-          <View style={flexChild}>
+          <View style={{ ...flexChild, ...flexColCC }}>
             <View style={{ ...flexRow, ...centerVertical }}>
               <Text style={{ ...fs18BoldBlack2, color: colorWhite._1 }}>Name:</Text>
               <CustomSpacer isHorizontal={true} space={sw24} />

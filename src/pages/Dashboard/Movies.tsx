@@ -73,7 +73,6 @@ export const Movies: FunctionComponent<IMoviesProps> = ({ navigation }: IMoviesP
   }, [movieListCategory])
 
   useEffect(() => {
-    console.log('enter')
     handleFetchMovieListCategory();
     handleFetchTrending()
   }, [])

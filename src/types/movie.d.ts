@@ -13,6 +13,8 @@ declare interface IMovieParent {
     vote_average: number;
     vote_count: number;
 }
+
+
 declare interface IMovie extends IMovieParent {
     genre_ids: number[];
 };

@@ -5,11 +5,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface IGlobalState {
     currentItem?: IItem;
-
+    currentActor?: IActorItem;
 }
 
 const initialState: IGlobalState = {
-    currentItem: undefined
+    currentItem: undefined,
+    currentActor: undefined
 }
 
 export const globalSlice = createSlice({
@@ -18,8 +19,11 @@ export const globalSlice = createSlice({
     reducers: {
         updateCurrentItem: (state, action: PayloadAction<IItem>) => {
             state.currentItem = action.payload
+        },
+        updateCurrentActor: (state, action: PayloadAction<IActorItem>) => {
+            state.currentActor = action.payload
         }
     }
 })
 
-export const { updateCurrentItem } = globalSlice.actions
+export const { updateCurrentActor, updateCurrentItem } = globalSlice.actions

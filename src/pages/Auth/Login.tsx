@@ -1,11 +1,11 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { Alert, Image, ImageStyle, Pressable, ScrollView, Text, View, ViewStyle } from 'react-native'
+import { ActivityIndicator, Alert, Image, ImageStyle, Pressable, ScrollView, Text, View, ViewStyle } from 'react-native'
 import TouchID from 'react-native-touch-id'
 import Keychain from 'react-native-keychain'
 
 
-import { BrowserWebView, CustomButton, CustomSpacer, CustomTextInput, SafeAreaPage } from '../../components'
-import { centerHorizontal, centerVertical, colorBlack, colorGreen, colorTransparent, colorWhite, flexChild, flexColCC, flexRow, flexRowCC, fs12BoldBlack2, px, sh100, sh200, sh24, sh300, sh32, sh48, sh56, sw05, sw1, sw100, sw12, sw16, sw200, sw24, sw248, sw400, sw500, sw56, sw8 } from '../../styles'
+import { BasicModal, BrowserWebView, CustomButton, CustomSpacer, CustomTextInput, SafeAreaPage } from '../../components'
+import { centerHV, centerHorizontal, centerVertical, colorBlack, colorGreen, colorTransparent, colorWhite, flexChild, flexColCC, flexRow, flexRowCC, fs12BoldBlack2, fullHW, px, sh100, sh200, sh24, sh300, sh32, sh48, sh56, sw05, sw1, sw100, sw12, sw16, sw200, sw24, sw248, sw400, sw500, sw56, sw8 } from '../../styles'
 import { LocalAssets } from '../../assets/images/LocalAssets'
 import { login } from '../../network-actions'
 import { TMDB_URL } from '../../constants'
@@ -20,7 +20,8 @@ interface ICredentials {
 export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProps) => {
   const [username, setUsername] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const [biometrics, setBiometrics] = useState<ICredentials | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [biometrics, setBiometrics] = useState<ICredentials | null | boolean>(null)
   const [webView, setWebView] = useState<boolean>(false)
 
   const logoStyle: ImageStyle = {
@@ -46,15 +47,19 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
   const handlePassword = (value: string) => {
     setPassword(value)
   }
-  const handleLogin = async (credentials?: ICredentials) => {
-    const usernameRequest = credentials !== undefined ? credentials.username : username
-    const passwordRequest = credentials !== undefined ? credentials.password : password
-    const loginResponse: boolean = await login(usernameRequest, passwordRequest);
-    if (loginResponse === true) {
-      if (credentials === undefined) {
-        await Keychain.setGenericPassword(username, password);
+  const handleLogin = async (credentials?: ICredentials | null | boolean) => {
+    if (credentials !== null && credentials !== false) {
+      const usernameRequest = credentials !== undefined ? credentials.username : username.trim()
+      const passwordRequest = credentials !== undefined ? credentials.password : password.trim()
+      setLoading(true)
+      const loginResponse: boolean = await login(usernameRequest, passwordRequest);
+      if (loginResponse === true) {
+        if (credentials === undefined) {
+          await Keychain.setGenericPassword(username.trim(), password.trim());
+        }
+        setLoading(false)
+        navigation.navigate("Private")
       }
-      navigation.navigate("Private")
     }
   }
 
@@ -80,7 +85,6 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
     // if (currentSession !== null) {
     TouchID.isSupported()
       .then(biometryType => {
-        console.log("type", biometryType)
         TouchID.authenticate()
           .then(success => {
             handleNavigation()
@@ -98,7 +102,7 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
 
   const handleCheckBiometrics = async () => {
     const credentials = await Keychain.getGenericPassword();
-    setBiometrics(credentials as ICredentials | null)
+    setBiometrics(credentials)
   }
 
   useEffect(() => {
@@ -108,7 +112,6 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
   return (
     <SafeAreaPage>
       {webView === false ? (
-
         <ScrollView>
           <View style={flexChild}>
             <CustomSpacer space={sh56} />
@@ -122,8 +125,8 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
                 <CustomSpacer space={sh24} />
                 <CustomTextInput label='Password' onChangeText={handlePassword} value={password} secureTextEntry={true} />
                 <CustomSpacer space={sh24} />
-                <CustomButton buttonStyle={loginButtonStyle} onPress={handleLogin} text='Login' />
-                {biometrics !== null ? (
+                <CustomButton disabled={username === "" || password === ""} buttonStyle={loginButtonStyle} onPress={handleLogin} text='Login' />
+                {biometrics !== null && biometrics !== false ? (
                   <Fragment>
                     <CustomSpacer space={sh24} />
                     <View style={{ ...flexRowCC }}>
@@ -152,6 +155,13 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
       ) : (
         <BrowserWebView baseUrl={TMDB_URL} handleClose={handleCloseWebView} />
       )}
+      {loading === true ? (
+        <BasicModal backdropOpacity={0.65} visible={loading}>
+          <View style={{ ...centerHV, ...fullHW }}>
+            <ActivityIndicator size={"large"} />
+          </View>
+        </BasicModal>
+      ) : null}
     </SafeAreaPage>
   )
 }

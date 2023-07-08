@@ -8,7 +8,6 @@ export const getAccountDetails = async (sessionId: string): Promise<IUser | unde
   try {
 
     const accountDetailsResponse = await axios.get(accountDetailsUrl)
-    console.log("resp", accountDetailsResponse.data)
     return accountDetailsResponse.data;
   }
   catch (err) {

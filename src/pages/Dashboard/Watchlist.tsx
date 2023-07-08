@@ -34,7 +34,6 @@ export const Watchlist: FunctionComponent<IWatchlistProps> = ({ navigation }: IW
     setLoading(true)
     try {
       const watchlistResponse = category === "Movies" ? await getWatchlistMovies() : await getWatchlistTvSeries();
-      console.log("resp", watchlistResponse)
       setWatchlist(watchlistResponse)
       setLoading(false)
     }
@@ -87,7 +86,6 @@ export const Watchlist: FunctionComponent<IWatchlistProps> = ({ navigation }: IW
             <View style={{ ...flexChild, ...flexRow, ...flexWrap }}>
               {watchlist.map((watchItem: IWatchlist, index: number) => {
                 const handleSelectMovie = () => {
-                  console.log("watch", watchItem)
                   const checkCategory = category === "Movies" ? "movies" : "tv";
                   dispatch(updateCurrentItem({ category: checkCategory, data: watchItem as IMovie }))
                   navigation.navigate("Details");
