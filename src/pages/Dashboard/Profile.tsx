@@ -7,12 +7,14 @@ import { CustomButton, CustomSpacer, RoundedButton, SafeAreaPage } from '../../c
 import { centerHorizontal, centerVertical, colorGray, colorGreen, colorTransparent, colorWhite, flexChild, flexColCC, flexRow, flexRowCC, fs12RegWhite1, fs16RegWhite1, fs18BoldBlack2, fs24BoldWhite1, px, sh24, sh48, sw12, sw24, sw56 } from '../../styles'
 import { deleteSession, getAccountDetails } from '../../network-actions'
 import { GRAVATAR_IMAGE_URL } from '../../constants'
+import { updateIsLoggedIn, useAppDispatch } from '../../store'
 
 type IProfileProps = ProfileScreenProps
 
 export const Profile = ({ navigation }: IProfileProps) => {
 
   const [userData, setUserData] = useState<IUser>()
+  const dispatch = useAppDispatch()
 
   const buttonStyle: ViewStyle = {
     backgroundColor: colorGreen._1,
@@ -22,6 +24,7 @@ export const Profile = ({ navigation }: IProfileProps) => {
 
   const handleLogout = async () => {
     await deleteSession();
+    dispatch(updateIsLoggedIn(false))
     navigation.dispatch(
       CommonActions.reset({
         index: 0,

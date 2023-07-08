@@ -9,6 +9,7 @@ import { centerHV, centerHorizontal, centerVertical, colorBlack, colorGreen, col
 import { LocalAssets } from '../../assets/images/LocalAssets'
 import { login } from '../../network-actions'
 import { TMDB_URL } from '../../constants'
+import { updateIsLoggedIn, useAppDispatch } from '../../store'
 
 declare type ILoginProps = LoginScreenProps
 
@@ -23,6 +24,7 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
   const [loading, setLoading] = useState<boolean>(false)
   const [biometrics, setBiometrics] = useState<ICredentials | null | boolean>(null)
   const [webView, setWebView] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
 
   const logoStyle: ImageStyle = {
     height: sh200,
@@ -57,6 +59,7 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
         if (credentials === undefined) {
           await Keychain.setGenericPassword(username.trim(), password.trim());
         }
+        dispatch(updateIsLoggedIn(true))
         setLoading(false)
         navigation.navigate("Private")
       }
@@ -116,7 +119,7 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
           <View style={flexChild}>
             <CustomSpacer space={sh56} />
             <View style={flexColCC}>
-              <Image style={logoStyle} source={LocalAssets.tmdbLogo} />
+              <Image style={logoStyle} source={LocalAssets.tmdbLogo} resizeMethod="resize" resizeMode="stretch" />
               <CustomSpacer space={sh48} />
             </View>
             <View style={{ ...px(sw248), ...flexColCC }}>

@@ -28,6 +28,7 @@ export const Movies: FunctionComponent<IMoviesProps> = ({ navigation }: IMoviesP
 
 
   const handleMovieListCategory = (value: TMovieCategory) => {
+    dispatch(updateSearchMovie(''))
     dispatch(updateMovieCategory(value))
   }
 
@@ -155,6 +156,7 @@ export const Movies: FunctionComponent<IMoviesProps> = ({ navigation }: IMoviesP
               </View>
             )}
           </ScrollView>
+          <CustomSpacer space={100} />
         </ScrollView>
       </View>
     </SafeAreaPage>

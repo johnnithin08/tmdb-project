@@ -1,4 +1,4 @@
-import tmdbLogo from "./tmdb_logo.png"
+import tmdbLogo from "./tmdb_logo.jpg"
 import imageLoader from "./Spin-1s-200px.gif"
 
 export const LocalAssets = {
