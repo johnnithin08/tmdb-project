@@ -33,7 +33,6 @@ export const TvSeries: FunctionComponent<ITvSeriesProps> = ({ navigation }: ITvS
   const handleFetchTvSeriesListCategory = async () => {
     setLoading(true)
     const tvSeriesListResponse = await getTvSeriesList(tvSeriesListCategory);
-    console.log("resp", tvSeriesListResponse)
     setLoading(false)
     dispatch(updateTvSeriesList(tvSeriesListResponse))
   }

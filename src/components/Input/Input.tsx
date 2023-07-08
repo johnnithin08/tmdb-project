@@ -1,5 +1,6 @@
 import React, { Fragment, FunctionComponent, RefObject, useState } from "react";
 import { NativeSyntheticEvent, Text, TextInput, TextInputFocusEventData, TextInputProps, TextStyle, View, ViewStyle } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { NunitoRegular } from "../../constants";
 import {
@@ -40,6 +41,8 @@ import {
   sw8,
 } from "../../styles";
 import { CustomSpacer } from "../Views/Spacer";
+import { IconButton } from "../Touchables";
+
 
 export interface CustomTextInputProps extends TextInputProps {
   containerStyle?: ViewStyle;
@@ -54,7 +57,7 @@ export interface CustomTextInputProps extends TextInputProps {
   noBorder?: boolean;
   onPressLabel?: () => void;
   prefixStyle?: TextStyle;
-  // rightIcon?: IIcon;
+  rightIcon?: IIcon;
   setRef?: string | ((instance: TextInput | null) => void) | RefObject<TextInput> | null;
   spaceToBottom?: number;
   spaceToLabel?: number;
@@ -81,7 +84,7 @@ export const CustomTextInput: FunctionComponent<CustomTextInputProps> = ({
   onPressLabel,
   placeholder,
   prefixStyle,
-  // rightIcon,
+  rightIcon,
   setRef,
   spaceToBottom,
   spaceToLabel,
@@ -193,6 +196,16 @@ export const CustomTextInput: FunctionComponent<CustomTextInputProps> = ({
             <IcoMoon color={colorBlue._4} name="error-filled" onPress={handleClear} size={sw24} suppressHighlighting={true} />
           </Fragment>
         ) : null} */}
+        {rightIcon === undefined ? null : (
+          <Fragment>
+            <CustomSpacer isHorizontal={true} space={sw16} />
+            <IconButton
+              color={rightIcon.color || colorBlue._1}
+              name={rightIcon.name}
+              onPress={disabled === true ? undefined : rightIcon.onPress}
+              size={rightIcon.size || sw32} type={Ionicons} />
+          </Fragment>
+        )}
       </View>
       {error === undefined ? null : (
         <View>

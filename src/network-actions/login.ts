@@ -39,7 +39,6 @@ export const login = async (username: string, password: string): Promise<boolean
           request_token: generateRequestToken,
         },
       )
-      console.log("resp", loginResponse);
       const createSessionResponse = await axios.post(`${BASE_URL}${CREATE_SESSION_URL}?api_key=${API_KEY}`,
         {
           request_token: generateRequestToken,

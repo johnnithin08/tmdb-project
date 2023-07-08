@@ -7,7 +7,6 @@ export const updateWatchlist = async (type: string, id: number, watchlist: boole
   const accountId = await AsyncStorage.getItem('accountId')
   const sessionId = await AsyncStorage.getItem('currentSession')
   const watchlistMoviesUrl = `${WATCHLIST_URL}${accountId}/watchlist?api_key=${API_KEY}&session_id=${sessionId}`
-  console.log("check", type, id, accountId, sessionId)
   try {
     const watchlistMoviesResponse = await axios.post(watchlistMoviesUrl, {
       media_type: type,

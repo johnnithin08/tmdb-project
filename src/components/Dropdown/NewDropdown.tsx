@@ -1,6 +1,7 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from "react";
 import { FlatList, Keyboard, Text, TextStyle, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import Collapsible from "react-native-collapsible";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { NunitoRegular } from "../../constants";
 import {
@@ -31,12 +32,15 @@ import {
   sw24,
   sw286,
   sw296,
+  sw32,
   sw328,
   sw360,
+  sw536,
 } from "../../styles";
 import { CustomTextInput } from "../Input";
 import { BasicModal } from "../Modals";
 import { CustomFlexSpacer, CustomSpacer } from "../Views/Spacer";
+import { IconButton } from "../Touchables";
 
 interface NewDropdownProps {
   disabled?: boolean;
@@ -130,7 +134,7 @@ export const NewDropdown: FunctionComponent<NewDropdownProps> = ({
     left: layout.x,
     position: "absolute",
     top: layout.y,
-    width: sw360,
+    width: sw536,
     zIndex: 3,
     ...viewStyle,
   };
@@ -174,7 +178,7 @@ export const NewDropdown: FunctionComponent<NewDropdownProps> = ({
                 editable={false}
                 placeholder={placeholderLabel}
                 placeholderTextColor={colorGray._4}
-                // rightIcon={{ name: "caret-down" }}
+                rightIcon={{ name: "caret-down" }}
                 viewStyle={{ ...inputStyle, ...viewStyle }}
                 value={value}
               />
@@ -186,12 +190,12 @@ export const NewDropdown: FunctionComponent<NewDropdownProps> = ({
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
           <View style={fullHW}>
             <View style={dropdownContainer}>
-              <View style={{ ...centerVertical, ...flexRow, height: sh44, ...px(sw15) }}>
-                <Text numberOfLines={1} style={{ ...fs16BoldBlue1, ...placeholderStyle, maxWidth: sw286 }}>
+              <View style={{ ...centerVertical, ...flexRow, height: sh44, ...px(sw32) }}>
+                <Text numberOfLines={1} style={{ ...fs16BoldBlue1, ...placeholderStyle, maxWidth: sw360 }}>
                   {value || placeholderLabel}
                 </Text>
                 <CustomFlexSpacer />
-                {/* <IcoMoon color={colorBlue._1} name="caret-down" size={sw24} /> */}
+                <IconButton color={colorBlue._1} name="caret-down" size={sw32} type={Ionicons} />
               </View>
               <Collapsible duration={100} collapsed={collapse} style={noBGColor}>
                 <View style={{ borderTopWidth: sw2, borderTopColor: colorBlue._1, maxHeight: maxHeight }}>
