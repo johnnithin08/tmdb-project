@@ -155,6 +155,7 @@ export const Movies: FunctionComponent<IMoviesProps> = ({ navigation }: IMoviesP
               </View>
             )}
           </ScrollView>
+          <CustomSpacer space={100} />
         </ScrollView>
       </View>
     </SafeAreaPage>

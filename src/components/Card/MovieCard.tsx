@@ -34,7 +34,6 @@ export const MovieCard = ({ handlePress, imageStyle, movieCardStyle, posterPath 
             borderRadius: sw32,
             ...imageStyle
           }}
-          // onl
           resizeMode="stretch"
         />
       </Pressable>

@@ -6,11 +6,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 export interface IGlobalState {
     currentItem?: IItem;
     currentActor?: IActorItem;
+    isLoggedIn: boolean;
 }
 
 const initialState: IGlobalState = {
     currentItem: undefined,
-    currentActor: undefined
+    currentActor: undefined,
+    isLoggedIn: false
 }
 
 export const globalSlice = createSlice({
@@ -22,8 +24,11 @@ export const globalSlice = createSlice({
         },
         updateCurrentActor: (state, action: PayloadAction<IActorItem>) => {
             state.currentActor = action.payload
+        },
+        updateIsLoggedIn: (state, action: PayloadAction<boolean>) => {
+            state.isLoggedIn = action.payload
         }
     }
 })
 
-export const { updateCurrentActor, updateCurrentItem } = globalSlice.actions
+export const { updateCurrentActor, updateCurrentItem, updateIsLoggedIn } = globalSlice.actions

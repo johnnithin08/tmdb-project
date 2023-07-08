@@ -156,6 +156,7 @@ export const TvSeries: FunctionComponent<ITvSeriesProps> = ({ navigation }: ITvS
               </View>
             )}
           </ScrollView>
+          <CustomSpacer space={100} />
         </ScrollView>
       </View>
     </SafeAreaPage>

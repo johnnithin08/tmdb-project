@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useRef } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Movies, Profile, TvSeries, Watchlist } from '../pages'
 import { Icon, Icons } from '../components'
 import { absolutePosition, colorBlack, colorGreen, colorWhite, flexChild, flexColCC } from '../styles'
-import { Text, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { Keyboard, KeyboardAvoidingView, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { WatchlistStackNavigator } from './WatchlistStackNavigator'
 import { SeriesStackNavigator } from './SeriesStackNavigator'
@@ -82,8 +82,9 @@ export const Private = () => {
     right: 15,
     borderRadius: 16,
   }
+
   return (
-    <Navigator screenOptions={{ headerShown: false, tabBarStyle: barStyle }}>
+    <Navigator screenOptions={{ headerShown: false, tabBarStyle: barStyle, tabBarHideOnKeyboard: true }}>
       {tabsArray.map((eachScreen, index) => {
         const { name, component, type, iconName } = eachScreen;
 

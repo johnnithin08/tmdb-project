@@ -96,6 +96,7 @@ export const Watchlist: FunctionComponent<IWatchlistProps> = ({ navigation }: IW
               })}
             </View>
           )}
+          <CustomSpacer space={100} />
         </ScrollView>
       </View>
     </SafeAreaPage>
