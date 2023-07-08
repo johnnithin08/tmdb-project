@@ -83,7 +83,7 @@ export const Actor = ({ navigation }: IDetailsProps) => {
             ) : (
               <View style={flexChild}>
                 <View style={centerVertical}>
-                  <Image source={{ uri: `${IMAGE_URL_CAROUSEL}${details?.profile_path}` }} style={imageStyle} resizeMethod="scale" resizeMode="center" />
+                  <Image source={{ uri: `${IMAGE_URL_CAROUSEL}${details?.profile_path}` }} style={imageStyle} resizeMethod="scale" resizeMode="stretch" />
                 </View>
                 <CustomSpacer space={sh16} />
                 <View style={centerVertical}>

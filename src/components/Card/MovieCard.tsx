@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Dimensions, GestureResponderEvent, Image, ImageStyle, Pressable, TouchableOpacity, View, ViewStyle } from "react-native";
 import FastImage from "react-native-fast-image";
 import { sw4, sh8, colorBlack, sw8, sw32 } from "../../styles";
-import { IMAGE_URL_CARD, } from "../../constants";
+import { IMAGE_URL_CARD, IMAGE_URL_DEFAULT, } from "../../constants";
 import { LocalAssets } from "../../assets/images/LocalAssets";
 
 
@@ -14,6 +14,7 @@ interface IMovieCardProps {
 }
 
 export const MovieCard = ({ handlePress, imageStyle, movieCardStyle, posterPath }: IMovieCardProps): JSX.Element => {
+
   const movieCard: ViewStyle = {
     height: Dimensions.get("screen").height * .25,
     width: Dimensions.get("screen").width * .48,
@@ -21,6 +22,7 @@ export const MovieCard = ({ handlePress, imageStyle, movieCardStyle, posterPath 
     marginBottom: sh8,
     ...movieCardStyle
   };
+
 
   return (
     <View style={movieCard}>

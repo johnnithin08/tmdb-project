@@ -119,7 +119,7 @@ export const Login: FunctionComponent<ILoginProps> = ({ navigation }: ILoginProp
           <View style={flexChild}>
             <CustomSpacer space={sh56} />
             <View style={flexColCC}>
-              <Image style={logoStyle} source={LocalAssets.tmdbLogo} />
+              <Image style={logoStyle} source={LocalAssets.tmdbLogo} resizeMethod="resize" resizeMode="stretch" />
               <CustomSpacer space={sh48} />
             </View>
             <View style={{ ...px(sw248), ...flexColCC }}>

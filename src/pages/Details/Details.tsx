@@ -10,7 +10,7 @@ import { CustomButton, CustomFlexSpacer, CustomSpacer, Icon, IconButton, MovieCa
 import { border, centerHorizontal, centerVertical, colorGray, colorGreen, colorTransparent, colorWhite, flexChild, flexColCC, flexGrow, flexRow, flexRowCC, flexWrap, fs10BoldWhite1, fs12BoldWhite1, fs16BoldWhite1, fs18BoldBlack2, fs24BoldWhite1, fs32BoldWhite1, fullWidth, px, py, sh100, sh16, sh24, sh4, sh8, sw1, sw100, sw12, sw16, sw20, sw24, sw32, sw4, sw48, sw56, sw8, sw80 } from '../../styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LocalAssets } from '../../assets/images/LocalAssets';
-import { IMAGE_URL_CARD, IMAGE_URL_CAROUSEL } from '../../constants';
+import { IMAGE_URL_CARD, IMAGE_URL_CAROUSEL, IMAGE_URL_CAST } from '../../constants';
 import { addRatingMovie, addRatingSeries, getMovieAccountState, getMovieCredits, getMovieDetails, getMovieVideos, getSeriesAccountState, getSeriesCredits, getSeriesDetails, getSeriesVideos, getSimilarMovies, getSimilarSeries, updateWatchlist } from '../../network-actions';
 import { TrailersMore } from './TrailersMore';
 import { MoreLikeThis } from './MoreLikeThis';
@@ -313,7 +313,7 @@ export const Details = ({ navigation }: IDetailsProps) => {
                     <Fragment key={castIndex}>
                       {castIndex !== 0 ? <CustomSpacer isHorizontal={true} space={sw24} /> : null}
                       <Pressable onPress={handleCast}>
-                        <Image source={{ uri: `${IMAGE_URL_CARD}${eachCast.profile_path}` }} style={castStyle} />
+                        <Image source={{ uri: `${IMAGE_URL_CAST}${eachCast.profile_path}` }} style={castStyle} />
                         <View style={{ maxWidth: Dimensions.get("screen").width * .25 }}>
                           <Text style={{ ...fs16BoldWhite1, ...flexWrap }}>{eachCast.character}</Text>
                           <CustomSpacer space={sh4} />

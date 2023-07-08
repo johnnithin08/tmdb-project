@@ -28,6 +28,7 @@ export const Movies: FunctionComponent<IMoviesProps> = ({ navigation }: IMoviesP
 
 
   const handleMovieListCategory = (value: TMovieCategory) => {
+    dispatch(updateSearchMovie(''))
     dispatch(updateMovieCategory(value))
   }
 
